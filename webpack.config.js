@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const eslintFormatter = require('react-dev-utils/eslintFormatter');
 var path = require('path');
 const autoprefixer = require('autoprefixer');
 module.exports = {
@@ -26,48 +27,67 @@ module.exports = {
     ],
     module:{
         rules:[   //загрузчик для jsx
+            // {
+            //     test: /\.(js|jsx|mjs)$/,
+            //     enforce: 'pre',
+            //     use: [
+            //         {
+            //             options: {
+            //                 //formatter: eslintFormatter,
+            //                 eslintPath: require.resolve('eslint'),
+            //             },
+            //             loader: require.resolve('eslint-loader'),
+            //         },
+            //     ],
+            //     include: /src/,
+            // },
             {
-                test: /\.(js|jsx)$/, // определяем тип файлов
-                exclude: /(node_modules)/,  // исключаем из обработки папку node_modules
-                loader: "babel-loader",   // определяем загрузчик
-                options: {
-                    presets: ["@babel/preset-env", "@babel/preset-react"]    // используемые плагины
-                }
-            }
-            ,
-            {
-                test: /\.scss$/,
-                use: [
+                oneOf: [
                     {
-                        loader: require.resolve('style-loader'),
-                    },
-                    {
-                        loader: require.resolve('css-loader'),
+                        test: /\.(js|jsx)$/, // определяем тип файлов
+                        exclude: /(node_modules)/,  // исключаем из обработки папку node_modules
+                        loader: "babel-loader",   // определяем загрузчик
                         options: {
-                            importLoaders: 1,
+                            presets: ["@babel/preset-env", "@babel/preset-react"]    // используемые плагины
                         }
+                    }
+                    ,
+                    {
+                        test: /\.scss$/,
+                        use: [
+                            {
+                                loader: require.resolve('style-loader'),
+                            },
+                            {
+                                loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                }
+                            },
+                            {
+                                loader: require.resolve('sass-loader'),
+                            },
+                        ]
                     },
                     {
-                        loader: require.resolve('sass-loader'),
+                        test: /\.css$/,
+                        use: [
+                            require.resolve('style-loader'),
+                            {
+                                loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                },
+                            },
+                        ],
                     },
+                    {
+                        test: /\.(png|svg|jpg|gif)$/,
+                        use: ["file-loader"]
+                    }
                 ]
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    require.resolve('style-loader'),
-                    {
-                        loader: require.resolve('css-loader'),
-                        options: {
-                            importLoaders: 1,
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: ["file-loader"]
             }
+
 
         ]
     }
